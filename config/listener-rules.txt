@@ -1,0 +1,23 @@
+## Listener Rules Configuration
+## Lab M3.03 – web-alb
+
+## Listener
+Protocol:   HTTP
+Port:       80
+
+## Rules (evaluated in order)
+Priority    Condition           Action
+default     (all traffic)       Forward → web-servers-tg
+                                ARN: arn:aws:elasticloadbalancing:eu-central-1:871939031886:targetgroup/web-servers-tg/7f070e6f5c387b4b
+
+## CLI Command Used
+aws elbv2 create-listener \
+  --load-balancer-arn $ALB_ARN \
+  --protocol HTTP \
+  --port 80 \
+  --default-actions Type=forward,TargetGroupArn=$TG_ARN
+
+## Notes
+- A single default rule forwards all HTTP traffic to the web-servers-tg target group.
+- The ALB uses the least-outstanding-requests algorithm for distribution across targets.
+- No path-based or host-based routing rules were added in this lab (basic setup).

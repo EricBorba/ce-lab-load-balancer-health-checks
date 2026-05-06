@@ -1,0 +1,28 @@
+## Health Check Configuration
+## Lab M3.03 – web-servers-tg
+
+Protocol:                HTTP
+Path:                    /health
+Port:                    80 (traffic port)
+Interval:                10 seconds
+Timeout:                 5 seconds
+Healthy threshold:       2 consecutive successes
+Unhealthy threshold:     2 consecutive failures
+Expected HTTP codes:     200
+
+## Endpoint Response (example)
+GET /health → HTTP 200 OK
+{
+    "status": "healthy",
+    "instance": "i-083e43058e4a65809",
+    "az": "eu-central-1a"
+}
+
+## Design Rationale
+- /health is a dedicated lightweight endpoint that does not trigger database calls or
+  expensive logic, so health check responses are fast and reliable.
+- Interval of 10s with a 2-failure threshold means an unhealthy instance is removed
+  within ~20 seconds of its first failure.
+- Timeout of 5s is generous enough to tolerate momentary slowness without false positives.
+- 2-success healthy threshold prevents a recovering instance from receiving production
+  traffic until it has passed back-to-back checks.

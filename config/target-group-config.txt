@@ -1,0 +1,35 @@
+## Target Group Configuration
+## Lab M3.03 – web-servers-tg
+
+Name:                web-servers-tg
+ARN:                 arn:aws:elasticloadbalancing:eu-central-1:871939031886:targetgroup/web-servers-tg/7f070e6f5c387b4b
+Protocol:            HTTP
+Port:                80
+Target Type:         Instance
+VPC:                 vpc-0bf2cbef40f848612
+
+## Registered Targets
+Instance ID              AZ              Port    Final Health State
+i-083e43058e4a65809      eu-central-1a   80      healthy
+i-068aaa92725b633ec      eu-central-1a   80      healthy  (was unhealthy during failover test)
+i-010122176b085bb76      eu-central-1b   80      healthy
+
+## CLI Commands Used
+# Create target group
+TG_ARN=$(aws elbv2 create-target-group \
+  --name web-servers-tg \
+  --protocol HTTP \
+  --port 80 \
+  --vpc-id $VPC_ID \
+  --health-check-protocol HTTP \
+  --health-check-path /health \
+  --health-check-interval-seconds 10 \
+  --health-check-timeout-seconds 5 \
+  --healthy-threshold-count 2 \
+  --unhealthy-threshold-count 2 \
+  --query 'TargetGroups[0].TargetGroupArn' --output text)
+
+# Register all three instances
+aws elbv2 register-targets \
+  --target-group-arn $TG_ARN \
+  --targets Id=$INSTANCE_1 Id=$INSTANCE_2 Id=$INSTANCE_3

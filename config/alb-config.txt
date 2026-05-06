@@ -1,0 +1,34 @@
+## Application Load Balancer Configuration
+## Lab M3.03 – web-alb
+
+Name:                web-alb
+ARN:                 arn:aws:elasticloadbalancing:eu-central-1:871939031886:loadbalancer/app/web-alb/2720dcda6d5afa9d
+DNS Name:            web-alb-1083040517.eu-central-1.elb.amazonaws.com
+Hosted Zone:         Z215JYRZR1TBD5
+Type:                Application (Layer 7)
+Scheme:              Internet-facing
+IP Address Type:     IPv4
+Region:              eu-central-1 (Europe – Frankfurt)
+Status:              Active
+Date Created:        2026-05-06 09:20 UTC+02:00
+
+## VPC & Network
+VPC ID:              vpc-0bf2cbef40f848612
+VPC CIDR:            10.0.0.0/16
+
+## Availability Zones and Subnets
+AZ               Subnet ID                       CIDR
+eu-central-1a    subnet-0ca407a4b0bb5a224        10.0.1.0/24
+eu-central-1b    subnet-0c3b098bdd986a620        10.0.2.0/24
+
+## Security Group
+ALB Security Group:  sg-096196bf5b5532a62
+Inbound rules:       TCP port 80 from 0.0.0.0/0
+
+## CLI Command Used
+aws elbv2 create-load-balancer \
+  --name web-alb \
+  --subnets $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 \
+  --security-groups $ALB_SG \
+  --scheme internet-facing \
+  --type application
